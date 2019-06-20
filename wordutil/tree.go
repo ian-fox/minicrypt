@@ -1,4 +1,4 @@
-package internal
+package wordutil
 
 // PrefixTree is an interface for checking if a string is a prefix of a valid word.
 // It is used for pruning the search tree if no valid words could fit in a location.

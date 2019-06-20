@@ -1,17 +1,17 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"os"
-	"bufio"
 
 	"github.com/spf13/cobra"
 
-	"github.com/ian-fox/minicrypt/internal"
+	"github.com/ian-fox/minicrypt/grid"
 )
 
 var rootCmd = &cobra.Command{
-	Use: "minicrypt wordlist_file",
+	Use:  "minicrypt wordlist_file",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		f, err := os.Open(args[0])
@@ -36,12 +36,12 @@ var rootCmd = &cobra.Command{
 			return err
 		}
 
-		grid, err := internal.Fill(words)
+		crossword, err := grid.Fill(words)
 		if err != nil {
 			return err
 		}
 
-		fmt.Println(grid.String())
+		fmt.Println(crossword.String())
 		return nil
 	},
 }

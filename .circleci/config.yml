@@ -1,0 +1,33 @@
+version: 2.1  
+
+jobs:
+  test:
+    docker:
+      - image: golang:1-alpine
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: apk add build-base make git
+      - run:
+          name: Unit tests
+          command: make test
+  lint:
+    docker:
+      - image: golang:1-alpine
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apk add make git
+            go get -u github.com/mgechev/revive
+      - run:
+          name: Run linter
+          command: make lint
+
+workflows:
+  main:
+    jobs:
+      - test
+      - lint

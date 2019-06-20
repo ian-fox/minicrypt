@@ -1,9 +1,11 @@
-package internal
+package grid
 
 import (
 	"errors"
-	"time"
 	"math/rand"
+	"time"
+
+	"github.com/ian-fox/minicrypt/wordutil"
 )
 
 // randomArray returns a shuffled list of indices.
@@ -23,9 +25,9 @@ func randomArray(length int) []int {
 }
 
 // Return true if a branch is invalid and should be pruned.
-func prune(grid *Grid, tree PrefixTree) bool {
+func prune(grid *Grid, prefixes wordutil.PrefixTree) bool {
 	for _, word := range grid.Verticals() {
-		if !tree.Check(word) {
+		if !prefixes.Check(word) {
 			return true
 		}
 	}
@@ -34,7 +36,7 @@ func prune(grid *Grid, tree PrefixTree) bool {
 }
 
 // fillOne is a helper for fill. It places one word in the grid.
-func fillOne(grid *Grid, tree PrefixTree, words []string, level int) bool {
+func fillOne(grid *Grid, prefixes wordutil.PrefixTree, words []string, level int) bool {
 	if level == 5 {
 		return true
 	}
@@ -46,11 +48,11 @@ func fillOne(grid *Grid, tree PrefixTree, words []string, level int) bool {
 		grid.SetWord(level, words[i])
 
 		// is this branch worth pursuing?
-		if prune(grid, tree) {
+		if prune(grid, prefixes) {
 			continue
 		}
 
-		if fillOne(grid, tree, words, level + 1) {
+		if fillOne(grid, prefixes, words, level+1) {
 			return true
 		}
 	}
@@ -63,17 +65,17 @@ func fillOne(grid *Grid, tree PrefixTree, words []string, level int) bool {
 // Fill will create a valid 5x5 grid.
 func Fill(words []string) (*Grid, error) {
 	// Make the tree.
-	tree := NewTreeNode()
-	for _, word := range(words) {
-		tree.AddWord(word)
+	prefixes := wordutil.NewTreeNode()
+	for _, word := range words {
+		prefixes.AddWord(word)
 	}
 
 	grid := Grid{}
 
 	// Try to fill the grid
-	if fillOne(&grid, tree, words, 0) {
+	if fillOne(&grid, prefixes, words, 0) {
 		return &grid, nil
 	}
 
-	return nil, errors.New("Could not construct valid grid with wordlist.")
+	return nil, errors.New("could not construct valid grid with wordlist")
 }

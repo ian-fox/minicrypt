@@ -1,4 +1,4 @@
-package internal
+package grid
 
 import "strings"
 
@@ -13,7 +13,7 @@ func (grid *Grid) Horizontals() []string {
 	var horizontals []string
 
 	for i := 0; i < 5; i++ {
-		if (grid[i][0] == Empty) {
+		if grid[i][0] == Empty {
 			break
 		}
 		horizontals = append(horizontals, string(grid[i][:]))
@@ -42,7 +42,7 @@ func (grid *Grid) Verticals() []string {
 
 // String returns a string representation of the grid.
 func (grid *Grid) String() string {
-	var output strings.Builder;
+	var output strings.Builder
 	output.Grow(6 * 5) // 6 characters times 5 lines
 	for i := 0; i < 5; i++ {
 		for j := 0; j < 5; j++ {
